@@ -1,3 +1,4 @@
+import axios from 'axios'
 import JSBI from 'jsbi'
 import db from 'repositories/database'
 
@@ -28,37 +29,53 @@ export default async function overviewAPI(req, res) {
     })
     .toArray()
 
-  const y = x
-    .map((x) => {
-      const d = new Date(x.issued_at)
-      x.date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
-      x.dateTs = new Date(x.date).getTime()
-      return x
-    })
-    .reduce((a, b) => {
-      const primarySales = b.type === 'nft_transfer' ? 1 : 0
-      const secondarySales = b.type === 'resolve_purchase' ? 1 : 0
+  const respNearMarketInfo = await axios.get(
+    `https://api.coingecko.com/api/v3/coins/near/market_chart?vs_currency=usd&days=30&interval=daily`
+  )
 
-      if (a[b.dateTs]) {
-        const price = JSBI.BigInt(b.price.toString())
-        const currentVolume = JSBI.BigInt(a[b.dateTs].volume || '0')
-        a[b.dateTs].volume = JSBI.add(currentVolume, price).toString()
-        a[b.dateTs].primarySales += primarySales
-        a[b.dateTs].secondarySales += secondarySales
-      } else {
-        a[b.dateTs] = {
-          primarySales: primarySales,
-          secondarySales: secondarySales,
-          volume: b.price.toString(),
-          date: b.date,
-        }
+  const prices = respNearMarketInfo.data.prices.map((x) => {
+    const d = new Date(x[0])
+    return {
+      date: `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`,
+      price: x[1],
+    }
+  })
+
+  const y = x.reduce((a, b) => {
+    const d = new Date(b.issued_at)
+    b.date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+    b.dateTs = new Date(b.date).getTime()
+
+    const primarySales = b.type === 'nft_transfer' ? 1 : 0
+    const secondarySales = b.type === 'resolve_purchase' ? 1 : 0
+
+    const hasUsdPrice = prices.find((x) => x.date === b.date)
+    const usdPrice = hasUsdPrice
+      ? hasUsdPrice.price
+      : prices[prices.length - 1].price
+
+    if (a[b.dateTs]) {
+      const price = JSBI.BigInt(b.price.toString())
+      const currentVolume = JSBI.BigInt(a[b.dateTs].volume || '0')
+      const newVolume = JSBI.add(currentVolume, price).toString()
+      a[b.dateTs].volume = newVolume
+      a[b.dateTs].volumeUsd = (newVolume / 10 ** 24) * usdPrice
+      a[b.dateTs].primarySales += primarySales
+      a[b.dateTs].secondarySales += secondarySales
+    } else {
+      a[b.dateTs] = {
+        primarySales: primarySales,
+        secondarySales: secondarySales,
+        volume: b.price.toString(),
+        volumeUsd: (b.price.toString() / 10 ** 24) * usdPrice,
+        date: b.date,
       }
-      return a
-    }, {})
+    }
+    return a
+  }, {})
 
   const sortedData = Object.keys(y)
     .sort()
-    .reverse()
     .map((x) => y[x])
 
   res.status(200).json(sortedData)
