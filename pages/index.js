@@ -2,6 +2,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import Chart from '../components/LineChart'
 import TxChart from 'components/BarChart'
+import Layout from 'components/Layout'
 
 export default function Home() {
   const [overviewData, setOverviewData] = useState([])
@@ -23,16 +24,18 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <p>Overview</p>
-      <div className="flex min-w-full">
-        <div className="w-1/2">
-          <Chart overviewData={overviewData} />
-        </div>
-        <div className="w-1/2">
-          <TxChart overviewData={overviewData} />
+    <Layout>
+      <div className="max-w-5xl mx-auto min-h-screen p-2">
+        <p className="mt-16">Overview</p>
+        <div className="flex flex-wrap min-w-full -mx-4">
+          <div className="w-full lg:w-1/2 p-4">
+            <Chart overviewData={overviewData} />
+          </div>
+          <div className="w-full lg:w-1/2 p-4">
+            <TxChart overviewData={overviewData} />
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }

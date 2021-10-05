@@ -8,8 +8,8 @@
   "dependencies": {
     "axios": "^0.22.0",
     "cache-manager": "^3.4.4",
+    "dayjs": "^1.10.7",
     "jsbi": "^3.2.5",
-    "lightweight-charts": "^3.6.1",
     "mongodb": "^4.1.2",
     "next": "latest",
     "react": "^17.0.2",
