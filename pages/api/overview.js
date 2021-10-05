@@ -31,26 +31,26 @@ export default async function overviewAPI(req, res) {
   const y = x
     .map((x) => {
       const d = new Date(x.issued_at)
-      x.date = new Date(
-        `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
-      ).getTime()
+      x.date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+      x.dateTs = new Date(x.date).getTime()
       return x
     })
     .reduce((a, b) => {
       const primarySales = b.type === 'nft_transfer' ? 1 : 0
       const secondarySales = b.type === 'resolve_purchase' ? 1 : 0
 
-      if (a[b.date]) {
+      if (a[b.dateTs]) {
         const price = JSBI.BigInt(b.price.toString())
-        const currentVolume = JSBI.BigInt(a[b.date].volume || '0')
-        a[b.date].volume = JSBI.add(currentVolume, price).toString()
-        a[b.date].primarySales += primarySales
-        a[b.date].secondarySales += secondarySales
+        const currentVolume = JSBI.BigInt(a[b.dateTs].volume || '0')
+        a[b.dateTs].volume = JSBI.add(currentVolume, price).toString()
+        a[b.dateTs].primarySales += primarySales
+        a[b.dateTs].secondarySales += secondarySales
       } else {
-        a[b.date] = {
+        a[b.dateTs] = {
           primarySales: primarySales,
           secondarySales: secondarySales,
           volume: b.price.toString(),
+          date: b.date,
         }
       }
       return a
