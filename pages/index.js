@@ -145,7 +145,7 @@ export default function Home() {
                 Marketplace
               </a>
             </div>
-            <div className="p-2">
+            <div className="px-2">
               <a
                 className="hover:text-white"
                 href="https://team.paras.id"
