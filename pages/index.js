@@ -84,13 +84,13 @@ export default function Home() {
 
       <div className="max-w-5xl mx-auto min-h-screen p-4">
         <div className="flex items-center py-4">
-          <div className="w-1/3"></div>
-          <div className="w-1/3">
-            <div className="w-24 mx-auto">
+          <div className="w-0 md:w-1/3"></div>
+          <div className="w-1/2 md:w-1/3">
+            <div className="w-24 mx-0 md:mx-auto">
               <Logo />
             </div>
           </div>
-          <div className="w-1/3 text-right">
+          <div className="w-1/2 md:w-1/3 text-right">
             <a
               className="hover:opacity-75"
               target="_blank"
