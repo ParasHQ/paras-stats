@@ -59,6 +59,7 @@ const RowCollection = ({ d }) => {
     <a
       className="w-full"
       href={`https://paras.id/collection/${d.collection_id}`}
+      target="_blank"
     >
       <div className="flex items-center h-16 lg:hover:bg-gray-800">
         <div className={`${HEADERS[0].className} flex items-center`}>
@@ -70,13 +71,7 @@ const RowCollection = ({ d }) => {
           <div className="pl-4 overflow-hidden">
             <p className="font-semibold truncate">{collection?.collection}</p>
             <span className="text-sm text-gray-300 truncate">
-              by{` `}
-              <a
-                href={`https://paras.id/${collection?.creator_id}/creation`}
-                className="font-semibold hover:border-b-2 border-gray-300"
-              >
-                {collection?.creator_id}
-              </a>
+              by {collection?.creator_id}
             </span>
           </div>
         </div>
@@ -112,13 +107,14 @@ const TopCollections = ({ data }) => {
   }, [sortBy, orderBy])
 
   return (
-    <div className="">
+    <div>
       <div className="overflow-x-auto bg-black bg-opacity-25 w-full rounded-lg">
-        <div className="">
+        <div>
           <div className="flex text-gray-300 ">
             {HEADERS.map((d) => {
               return (
                 <div
+                  key={d.id}
                   className={`${d.className} cursor-pointer hover:opacity-75 border-gray-800 border-b-2`}
                   onClick={() => {
                     if (sortBy === d.id) {

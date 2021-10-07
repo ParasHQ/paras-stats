@@ -8,6 +8,7 @@ const Chart = ({ overviewData }) => {
 
   useEffect(() => {
     if (!tooltipData && overviewData.length > 0) {
+      console.log('hello')
       calculateTotalVolume()
     }
   }, [tooltipData, overviewData])
@@ -52,7 +53,7 @@ const Chart = ({ overviewData }) => {
               data={overviewData}
               margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
               onMouseLeave={() => {
-                setTooltipData(null)
+                calculateTotalVolume()
               }}
             >
               <defs>

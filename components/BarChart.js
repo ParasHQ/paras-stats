@@ -67,10 +67,7 @@ const TxChart = ({ overviewData }) => {
               data={overviewData}
               margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
               onMouseLeave={() => {
-                setTooltipTitle(null)
-                setTooltipPrimary(null)
-                setTooltipSecondary(null)
-                setTooltipDate(null)
+                calculateTotalVolume()
               }}
             >
               <XAxis
