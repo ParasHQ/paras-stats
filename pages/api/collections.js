@@ -7,7 +7,7 @@ export default async function collectionsAPI(req, res) {
 
   const collectionStats = await db.root
     .collection('collection_stats')
-    .find({})
+    .find({collection_id: {$nin: ['crypto-ape-gang-by-razcrypto22near', 'x.paras.near']}})
     .project({
       owner_ids: 0,
     })
