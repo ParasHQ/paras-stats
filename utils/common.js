@@ -26,7 +26,7 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
   if (url.includes('://')) {
     const [protocol, path] = url.split('://')
     if (protocol === 'ipfs') {
-      if (opts.useOriginal || process.env.APP_ENV !== 'production') {
+      if (opts.useOriginal || process.env.NEXT_PUBLIC_APP_ENV !== 'production') {
         const cid = new CID(path)
         if (cid.version === 0) {
           return `https://ipfs-gateway.paras.id/ipfs/${path}`
@@ -34,20 +34,13 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
           return `https://ipfs.fleek.co/ipfs/${path}`
         }
       }
-
-      let transformationList = []
-      if (opts.width) {
-        transformationList.push(`tr:w-${opts.width}`)
-      } else {
-        transformationList.push('tr:w-0.8')
-      }
-      return `https://paras-ipfs.paras.id/${transformationList.join(',')}/${path}`
+      return `https://paras-ipfs.paras.id/${path}`
     }
     return url
   } else {
     try {
       const cid = new CID(url)
-      if (opts.useOriginal || process.env.APP_ENV !== 'production') {
+      if (opts.useOriginal || process.env.NEXT_PUBLIC_APP_ENV !== 'production') {
         if (cid.version === 0) {
           return `https://ipfs-gateway.paras.id/ipfs/${cid}`
         } else if (cid.version === 1) {
@@ -55,13 +48,7 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
         }
       }
 
-      let transformationList = []
-      if (opts.width) {
-        transformationList.push(`tr:w-${opts.width}`)
-      } else {
-        transformationList.push('tr:w-0.8')
-      }
-      return `https://paras-ipfs.paras.id/${transformationList.join(',')}/${cid}`
+      return `https://paras-ipfs.paras.id/${cid}`
     } catch (err) {
       return url
     }
